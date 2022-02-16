@@ -11,6 +11,8 @@ func _ready():
 	player = get_node("../Player")
 
 func _physics_process(_delta):
+	if(GameLoop.game_state != 1):
+		return
 	look_at(player.position)
 	velocity = Vector2.ZERO
 	if player:
@@ -18,6 +20,8 @@ func _physics_process(_delta):
 	velocity = move_and_slide(velocity)
 
 func hit(damage):
+	if(GameLoop.game_state != 1):
+		return
 	health -= damage
 	if(health <= 0):
 		queue_free()

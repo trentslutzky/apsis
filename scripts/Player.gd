@@ -19,13 +19,12 @@ func get_input():
 	return input
 
 func _physics_process(_delta):
+	if(GameLoop.game_state != 1):
+		return
+	
 	var direction = get_input()
 	if direction.length() > 0:
 		velocity = lerp(velocity, direction.normalized() * speed, acceleration)
 	else:
 		velocity = lerp(velocity, Vector2.ZERO, friction)
 	velocity = move_and_slide(velocity)
-	
-func _process(_delta):
-	var fps = Engine.get_frames_per_second()
-	var lerp_interval = velocity / fps
