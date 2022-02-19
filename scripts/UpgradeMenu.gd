@@ -19,6 +19,7 @@ func _on_ranger_start_pressed():
 	starter_orbital.rotate_speed = 1
 	starter_orbital.distance = 75
 	starter_orbital.size = 9
+	starter_orbital.ranger_attack_speed = 0.1
 	$starter/start_orbital_buttons/brawler_start.pressed = false
 	$starter/start_orbital_buttons/ranger_start.pressed = true
 

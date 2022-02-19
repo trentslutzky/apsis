@@ -2,7 +2,7 @@ extends KinematicBody2D
 
 var player
 
-var move_speed = 60
+var move_speed = 300
 var velocity = Vector2.ZERO
 
 export var health = 100
@@ -25,4 +25,3 @@ func hit(damage):
 	health -= damage
 	if(health <= 0):
 		queue_free()
-	print("I was hit")

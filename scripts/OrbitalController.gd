@@ -17,13 +17,13 @@ export var ranger_projectile_speed = 500
 export var ranger_projectile_damage = 10
 export (PackedScene) var projectile
 var shot_timer : Timer = null
-var bodies_in_range = []
+onready var range_shape = CircleShape2D.new()
+var target : Node2D = null
 
 # brawler stuff
 export(Color) var brawler_color = Color(239,181,27,255)
 export var brawler_contact_damage = 50
 
-var target : Node2D = null
 var angle = 0
 
 func _ready():
@@ -61,10 +61,24 @@ func motion(delta):
 	$Sat.position = Vector2(distance*cos(angle),distance*sin(angle))
 		
 func ranger():
+	$Sat/range/shape.shape.radius = ranger_range
 	$Sat/Sprite.modulate = ranger_color
 	# orbital looks at the target (for aiming)
 	if(is_instance_valid(target)):
 		$Sat.look_at(target.global_position)
+		 
+	$ShotTimer.wait_time = ranger_attack_speed
+	
+	var bodies = $Sat/range.get_overlapping_bodies()
+	var closest_body = null
+	var closest_body_distance = 99999999999999
+	for body in bodies:
+		if(body.is_in_group("Enemy")):
+			var body_distance = position.distance_squared_to(body.position)
+			if(body_distance < closest_body_distance):
+				closest_body_distance = body_distance
+				closest_body = body
+	target = closest_body
 
 func brawler():
 	$Sat/Sprite.modulate = brawler_color
@@ -99,9 +113,3 @@ func _draw():
 		return
 	if(orbital_type == ORBITAL_TYPES.RANGER):
 		draw_circle($Sat.position,ranger_range,Color(1,0,0,0.1))
-
-func _on_range_body_entered(body):
-	bodies_in_range.append(body)
-
-func _on_range_body_exited(body):
-	pass # Replace with function body.

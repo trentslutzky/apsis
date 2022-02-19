@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://images/grid.png" type="Texture" id=1]
 [ext_resource path="res://images/creep.png" type="Texture" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://ui/themes/UI_Theme.tres" type="Theme" id=7]
 [ext_resource path="res://scripts/CameraController.gd" type="Script" id=8]
 [ext_resource path="res://scenes/Enemy.tscn" type="PackedScene" id=9]
+[ext_resource path="res://sounds/click.wav" type="AudioStream" id=10]
 [ext_resource path="res://scenes/objects/projectiles/Shot.tscn" type="PackedScene" id=11]
 [ext_resource path="res://sounds/shot.wav" type="AudioStream" id=12]
 [ext_resource path="res://sounds/music/enchanted tiki 86.mp3" type="AudioStream" id=13]
@@ -16,17 +17,17 @@
 [ext_resource path="res://scripts/UpgradeMenu.gd" type="Script" id=15]
 [ext_resource path="res://images/icon.png" type="Texture" id=16]
 [ext_resource path="res://scripts/MainMenuUI.gd" type="Script" id=17]
+[ext_resource path="res://sounds/tone.wav" type="AudioStream" id=18]
 
 [sub_resource type="Environment" id=4]
 background_mode = 4
 dof_blur_near_distance = 2.37
 dof_blur_near_amount = 0.0
 glow_enabled = true
-glow_intensity = 3.2
-glow_strength = 0.98
+glow_intensity = 3.07
+glow_strength = 0.78
+glow_bloom = 0.08
 glow_blend_mode = 1
-glow_hdr_threshold = 0.62
-glow_hdr_scale = 2.76
 glow_high_quality = true
 
 [sub_resource type="DynamicFont" id=1]
@@ -84,7 +85,7 @@ radius = 25.0799
 radius = 15.0333
 
 [sub_resource type="CircleShape2D" id=11]
-radius = 200.0
+radius = 0.01
 
 [node name="Game" type="Node2D"]
 
@@ -93,12 +94,21 @@ environment = SubResource( 4 )
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 13 )
+volume_db = -16.488
 autoplay = true
 
 [node name="UI" type="Control" parent="."]
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="audio_select" type="AudioStreamPlayer" parent="UI"]
+stream = ExtResource( 10 )
+volume_db = -13.952
+
+[node name="audio_hover" type="AudioStreamPlayer" parent="UI"]
+stream = ExtResource( 18 )
+volume_db = -6.341
 
 [node name="UI Canvas" type="CanvasLayer" parent="UI"]
 
@@ -406,6 +416,7 @@ __meta__ = {
 }
 
 [node name="upgrade_menu" type="Control" parent="UI/UI Canvas"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 15 )
@@ -429,7 +440,6 @@ margin_left = -687.0
 margin_top = -346.0
 margin_right = -429.0
 margin_bottom = -280.0
-rect_rotation = 0.0787566
 theme = ExtResource( 7 )
 text = "start"
 __meta__ = {
@@ -532,6 +542,7 @@ shape = SubResource( 5 )
 texture = ExtResource( 2 )
 
 [node name="starter_orbital" type="Node2D" parent="Level/Player"]
+visible = false
 script = ExtResource( 5 )
 rotate_speed = 2
 distance = 150
@@ -563,11 +574,32 @@ shape = SubResource( 6 )
 [node name="shape" type="CollisionShape2D" parent="Level/Player/starter_orbital/Sat/range"]
 shape = SubResource( 11 )
 
-[node name="Enemy" parent="Level" instance=ExtResource( 9 )]
+[node name="Enemy" parent="Level" groups=["Enemy"] instance=ExtResource( 9 )]
 position = Vector2( 735, 867 )
 
+[node name="Enemy2" parent="Level" groups=["Enemy"] instance=ExtResource( 9 )]
+position = Vector2( 449, 875 )
+
+[node name="Enemy3" parent="Level" groups=["Enemy"] instance=ExtResource( 9 )]
+position = Vector2( 594, 790 )
+
+[node name="Enemy4" parent="Level" groups=["Enemy"] instance=ExtResource( 9 )]
+position = Vector2( -679, 228 )
+
+[node name="Enemy5" parent="Level" groups=["Enemy"] instance=ExtResource( 9 )]
+position = Vector2( -752, 334 )
+
+[node name="Enemy6" parent="Level" groups=["Enemy"] instance=ExtResource( 9 )]
+position = Vector2( -625, 411 )
+
+[node name="Enemy7" parent="Level" groups=["Enemy"] instance=ExtResource( 9 )]
+position = Vector2( -599, 341 )
+
+[connection signal="mouse_entered" from="UI/UI Canvas/main_menu/start_button" to="UI/UI Canvas/main_menu" method="_on_start_button_mouse_entered"]
 [connection signal="pressed" from="UI/UI Canvas/main_menu/start_button" to="UI/UI Canvas/main_menu" method="_on_start_button_pressed"]
+[connection signal="mouse_entered" from="UI/UI Canvas/main_menu/settings_button" to="UI/UI Canvas/main_menu" method="_on_settings_button_mouse_entered"]
 [connection signal="pressed" from="UI/UI Canvas/main_menu/settings_button" to="UI/UI Canvas/main_menu" method="_on_settings_button_pressed"]
+[connection signal="mouse_entered" from="UI/UI Canvas/main_menu/quit_button" to="UI/UI Canvas/main_menu" method="_on_quit_button_mouse_entered"]
 [connection signal="pressed" from="UI/UI Canvas/main_menu/quit_button" to="UI/UI Canvas/main_menu" method="_on_quit_button_pressed"]
 [connection signal="pressed" from="UI/UI Canvas/pause_menu/VBoxContainer/start_button" to="UI/UI Canvas/pause_menu" method="_on_start_button_pressed"]
 [connection signal="pressed" from="UI/UI Canvas/pause_menu/VBoxContainer/settings_button" to="UI/UI Canvas/pause_menu" method="_on_settings_button_pressed"]
@@ -577,5 +609,3 @@ position = Vector2( 735, 867 )
 [connection signal="pressed" from="UI/UI Canvas/upgrade_menu/starter/start_orbital_buttons/brawler_start" to="UI/UI Canvas/upgrade_menu" method="_on_brawler_start_pressed"]
 [connection signal="timeout" from="Level/Player/starter_orbital/ShotTimer" to="Level/Player/starter_orbital" method="_on_ShotTimer_timeout"]
 [connection signal="body_entered" from="Level/Player/starter_orbital/Sat/collision_area" to="Level/Player/starter_orbital" method="_on_collision_area_body_entered"]
-[connection signal="body_entered" from="Level/Player/starter_orbital/Sat/range" to="Level/Player/starter_orbital" method="_on_range_body_entered"]
-[connection signal="body_exited" from="Level/Player/starter_orbital/Sat/range" to="Level/Player/starter_orbital" method="_on_range_body_exited"]
